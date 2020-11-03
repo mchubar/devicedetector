@@ -1,7 +1,7 @@
 package device
 
 import(
-	. "github.com/gamebtc/devicedetector/parser"
+	. "github.com/mchubar/devicedetector/parser"
 )
 
 const dir = "../../regexes/device"

@@ -12,7 +12,7 @@ Installation
 The recommended way to install device detector
 
 ```
-go get github.com/gamebtc/devicedetector
+go get github.com/mchubar/devicedetector
 ```
 
 Examples
@@ -25,7 +25,7 @@ import (
 	"fmt"
 	"log"
 
-	. "github.com/gamebtc/devicedetector"
+	. "github.com/mchubar/devicedetector"
 )
 
 func main() {
@@ -96,7 +96,7 @@ There are already a few ports of this tool to other languages:
 - **Crystal** https://github.com/creadone/device_detector
 - **Elixir** https://github.com/elixir-inspector/ua_inspector
 - **Java** https://github.com/mngsk/device-detector
-- **Go** https://github.com/gamebtc/devicedetector
+- **Go** https://github.com/mchubar/devicedetector
 
 
 ## What Device Detector is able to detect
