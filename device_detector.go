@@ -194,7 +194,7 @@ func (d *DeviceDetector) parseInfo(info *DeviceInfo) {
 
 	if deviceType == DEVICE_TYPE_INVALID {
 		if info.HasAndroidMobileFragment() {
-			deviceType = DEVICE_TYPE_TABLET
+			deviceType = DEVICE_TYPE_SMARTPHONE
 		} else if ok, _ := opaTabReg.MatchString(ua); ok {
 			deviceType = DEVICE_TYPE_TABLET
 		} else if info.HasAndroidMobileFragment() {
