@@ -235,10 +235,8 @@ func (d *DeviceDetector) parseInfo(info *DeviceInfo) {
 		}
 	}
 
-	if deviceType == DEVICE_TYPE_INVALID {
-		if osShortName == "AND" && osVersion != "" {
-			deviceType = DEVICE_TYPE_SMARTPHONE
-		}
+	if deviceType == DEVICE_TYPE_INVALID && info.HasAndroidTableFragment() {
+		deviceType = DEVICE_TYPE_TABLET
 	}
 
 	if deviceType != DEVICE_TYPE_INVALID {
