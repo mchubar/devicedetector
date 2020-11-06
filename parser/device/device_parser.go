@@ -1,7 +1,6 @@
 package device
 
 import (
-	"sort"
 	"strings"
 
 	. "github.com/mchubar/devicedetector/parser"
@@ -28,6 +27,7 @@ type Model struct {
 }
 
 type DeviceReg struct {
+	Brand   string
 	Regular `yaml:",inline" json:",inline"`
 	Model   string   `yaml:"model" json:"model"`
 	Device  string   `yaml:"device" json:"device"`
@@ -35,7 +35,7 @@ type DeviceReg struct {
 }
 
 type DeviceParserAbstract struct {
-	Regexes      map[string]*DeviceReg
+	Regexes      []*DeviceReg
 	overAllMatch Regular
 }
 
@@ -51,7 +51,12 @@ func (d *DeviceParserAbstract) Load(file string) error {
 			m.Compile()
 		}
 	}
-	d.Regexes = v
+
+	for brand, regex := range v {
+		regex.Brand = brand
+		d.Regexes = append(d.Regexes, regex)
+	}
+
 	return nil
 }
 
@@ -61,16 +66,11 @@ func (d *DeviceParserAbstract) PreMatch(ua string) bool {
 		if count == 0 {
 			return false
 		}
-		sortKeys := make([]string, 0, count)
-		for k, _ := range d.Regexes {
-			sortKeys = append(sortKeys, k)
-		}
-		sort.Strings(sortKeys)
 		sb := strings.Builder{}
-		sb.WriteString(d.Regexes[sortKeys[count-1]].Regex)
+		sb.WriteString(d.Regexes[count-1].Regex)
 		for i := count - 2; i >= 0; i-- {
 			sb.WriteString("|")
-			sb.WriteString(d.Regexes[sortKeys[i]].Regex)
+			sb.WriteString(d.Regexes[i].Regex)
 		}
 		d.overAllMatch.Regex = sb.String()
 		d.overAllMatch.Compile()
@@ -83,7 +83,8 @@ func (d *DeviceParserAbstract) Parse(ua string) *DeviceMatchResult {
 	var regex *DeviceReg
 	var brand string
 	var matches []string
-	for brand, regex = range d.Regexes {
+	for _, regex = range d.Regexes {
+		brand = regex.Brand
 		matches = regex.MatchUserAgent(ua)
 		if len(matches) > 0 {
 			break
