@@ -102,7 +102,7 @@ func (d *DeviceParserAbstract) Parse(ua string) *DeviceMatchResult {
 	var matches []string
 
 	count := len(d.Regexes)
-	for i := count - 1; i >= 0; i-- {
+	for i := 0 ; i < count; i++ {
 		regex = d.Regexes[i]
 		brand = regex.Brand
 		matches = regex.MatchUserAgent(ua)
