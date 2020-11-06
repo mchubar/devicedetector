@@ -1,6 +1,10 @@
 package device
 
 import (
+	"errors"
+	"fmt"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 	"strings"
 
 	. "github.com/mchubar/devicedetector/parser"
@@ -42,9 +46,20 @@ type DeviceParserAbstract struct {
 func (d *DeviceParserAbstract) Load(file string) error {
 	var v map[string]*DeviceReg
 	err := ReadYamlFile(file, &v)
+
+	m := yaml.MapSlice{}
+
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		return errors.New("not exists:" + file)
+	}
+
+	err = yaml.Unmarshal([]byte(data), &m)
+
 	if err != nil {
 		return err
 	}
+
 	for _, item := range v {
 		item.Compile()
 		for _, m := range item.Models {
@@ -52,7 +67,9 @@ func (d *DeviceParserAbstract) Load(file string) error {
 		}
 	}
 
-	for brand, regex := range v {
+	for _,item := range m{
+		brand := fmt.Sprintf("%v", item.Key)
+		regex := v[brand]
 		regex.Brand = brand
 		d.Regexes = append(d.Regexes, regex)
 	}
@@ -83,7 +100,10 @@ func (d *DeviceParserAbstract) Parse(ua string) *DeviceMatchResult {
 	var regex *DeviceReg
 	var brand string
 	var matches []string
-	for _, regex = range d.Regexes {
+
+	count := len(d.Regexes)
+	for i := count - 1; i >= 0; i-- {
+		regex := d.Regexes[i]
 		brand = regex.Brand
 		matches = regex.MatchUserAgent(ua)
 		if len(matches) > 0 {
